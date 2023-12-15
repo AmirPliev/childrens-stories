@@ -2,7 +2,7 @@
     import owl_img from "$lib/images/owl.png";
     export let paragraph: string;
     export let direction: string = "left";
-    export let title: boolean = false;
+    export let showTitle: boolean = false;
 
     const images: {
         [key: string]: string;
@@ -19,11 +19,11 @@
     }
 </script>
 
-<div class="{gradient[direction]} h-screen from-background-100 to-background-300
+<div class="{gradient[direction]} snap-center h-screen from-background-100 to-background-300
             px-3 lg:px-16 py-16 flex justify-center overflow-hidden">
     <div class="flex flex-col justify-between w-[90%] max-w-[1000px]">
 
-        {#if title}
+        {#if showTitle}
             <h1 class="text-3xl text-center">Your bedtime story</h1>
         {/if}
         <div class="h-[85%] flex gap-[5%] {images[direction]}">

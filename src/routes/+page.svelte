@@ -11,22 +11,25 @@
     function getStory() {
         return story.map(post => post).flat()
     }
+
 </script>
 
-
-<div class="">
-    <div class="h-screen flex justify-center w-full ">
-        <div class="absolute text-gray-100 px-6 top-[25vh] rounded-full 
-                    animate-glowing
-                    p-3 bg-[#60BEFE] hover:bg-[#7fc8fa] hover:cursor-pointer">
+<div class='snap-y snap-mandatory h-screen w-screen overflow-scroll no-scrollbar'>
+    <div class="h-screen snap-center w-full relative ">
+        <div class="h-full  flex justify-center w-full ">
+            <div class="absolute text-gray-100 px-6 top-[25vh] rounded-full 
+            animate-glowing
+            p-3 bg-[#60BEFE] hover:bg-[#7fc8fa] hover:cursor-pointer">
             Create your bedtime story
-        </div>
+            </div>
         <img src={background_img} alt="background"  class="object-cover w-full h-full"/>
+        </div>
     </div>
 
     {#each getStory() as paragraph, index}
-        <Paragraph {paragraph} direction={index % 2 == 0 ? "right" : "left"} title={index == 0}/>
-    {/each}
+    <Paragraph paragraph={paragraph} direction={index % 2 == 0 ? "left" : "right"} showTitle={index === 0} />
 
-   
-</div>
+    {/each}
+  </div>
+
+
