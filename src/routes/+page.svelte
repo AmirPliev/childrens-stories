@@ -1,35 +1,86 @@
-
 <script>
-    import background_img from "$lib/images/background_ext.png";
-    import Paragraph from "$lib/-paragraph.svelte";
-    const story = [
-        `Once upon a time, in a quaint village nestled between rolling hills, there lived a young girl named Lily. With a heart full of curiosity, she often wandered into the nearby woods, where ancient trees whispered tales of old. One evening, as the sun dipped below the horizon, painting the sky in hues of orange and pink, Lily discovered a hidden path covered in golden leaves. Intrigued, she followed it until she stumbled upon a mystical pond, its surface reflecting the colors of the setting sun.`,
-        `As Lily gazed into the pond, a shimmering figure emerged from the water – a water sprite named Seraphina. Seraphina spoke in a melodic voice, sharing stories of forgotten realms beneath the pond's surface. She told Lily about the secret world of underwater cities, glowing coral castles, and playful merfolk. Seraphina gifted Lily a small seashell, explaining that it held the magic to transport her to the underwater realm whenever she wished. With a grateful heart, Lily returned home, eager for the next adventure that awaited her beneath the surface of the mystical pond.`,
-        `That night, as the village slept under the moon's gentle glow, Lily held the seashell in her hands and whispered a wish. Suddenly, she found herself surrounded by the breathtaking beauty of the underwater realm. Gliding alongside friendly merfolk and colorful fish, Lily marveled at the wonders beneath the surface. As the first light of dawn approached, she returned home, cherishing the magical secret she shared with the water sprite. And so, every now and then, Lily would visit the enchanted pond, where the worlds above and below intertwined in a dance of dreams and wonders.`,
-    ]
+	import background_img from '$lib/images/background_ext.png';
+	import Paragraph from '$lib/-paragraph.svelte';
+	import { Jumper } from 'svelte-loading-spinners';
+	import { fade } from 'svelte/transition';
+	import OpenAI from 'openai';
 
-    function getStory() {
-        return story.map(post => post).flat()
-    }
+	let storyTitle = 'Your bedtime story';
+	let story = [];
 
+	async function createStory() {
+		const openai = new OpenAI({
+			apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+			dangerouslyAllowBrowser: true
+		});
+
+		const chatCompletion = await openai.chat.completions.create({
+			messages: [
+				{
+					role: 'user',
+					content: 'Write me a short bed time story. Make it a story between 1 and 2 paragraphs.'
+				}
+			],
+			model: 'gpt-3.5-turbo'
+		});
+
+		let storyString = chatCompletion.choices[0].message.content?.split('\n');
+		story = storyString?.filter((line) => line !== '');
+		story = story.map((post) => post).flat();
+	}
+
+	let loading = false;
+	let success = false;
+	async function onPress() {
+		loading = true;
+
+		await createStory();
+		loading = false;
+		success = true;
+
+		setTimeout(() => {
+			if (success) {
+				document.getElementById('screen_0')?.scrollIntoView({ behavior: 'smooth' });
+			}
+		}, 2 * 1000);
+
+		setTimeout(() => {
+			success = false;
+		}, 30 * 1000);
+	}
 </script>
 
-<div class='snap-y snap-mandatory h-screen w-screen overflow-scroll no-scrollbar'>
-    <div class="h-screen snap-center w-full relative ">
-        <div class="h-full  flex justify-center w-full ">
-            <div class="absolute text-gray-100 px-6 top-[25vh] rounded-full 
-            animate-glowing
-            p-3 bg-[#60BEFE] hover:bg-[#7fc8fa] hover:cursor-pointer">
-            Create your bedtime story
-            </div>
-        <img src={background_img} alt="background"  class="object-cover w-full h-full"/>
-        </div>
-    </div>
+<div class="snap-y snap-mandatory h-screen w-screen overflow-scroll no-scrollbar">
+	<div class="h-screen snap-center w-full relative">
+		<div class="h-full flex justify-center w-full">
+			<div class="absolute top-[25vh] h-32 flex justify-center items-center">
+				{#if loading && !success}
+					<Jumper size="300" color="#7fc8fa" unit="px" duration="5s" />
+				{:else if success && !loading}
+					<div transition:fade={{ delay: 250, duration: 600 }} class="text-2xl">
+						Your bedtime story is ready!
+					</div>
+				{:else}
+					<button
+						on:click={onPress}
+						class="text-gray-100 px-6 rounded-full animate-glowing
+                               p-3 bg-[#60BEFE] hover:bg-[#7fc8fa] hover:cursor-pointer
+                               focus:bg-[#4ab1f7]"
+					>
+						Create your bedtime story
+					</button>
+				{/if}
+			</div>
+			<img src={background_img} alt="background" class="object-cover w-full h-full" />
+		</div>
+	</div>
 
-    {#each getStory() as paragraph, index}
-    <Paragraph paragraph={paragraph} direction={index % 2 == 0 ? "left" : "right"} showTitle={index === 0} />
-
-    {/each}
-  </div>
-
-
+	{#each story as paragraph, index}
+		<Paragraph
+			id="screen_{index}"
+			{paragraph}
+			direction={index % 2 == 0 ? 'left' : 'right'}
+			title={index === 0 ? storyTitle : ''}
+		/>
+	{/each}
+</div>
