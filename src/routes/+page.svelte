@@ -18,7 +18,7 @@
 		images = json.images;
 
 		loading = false;
-		success = true;
+		success = data.length > 0 ? true : false;
 
 		setTimeout(() => {
 			if (success) {
