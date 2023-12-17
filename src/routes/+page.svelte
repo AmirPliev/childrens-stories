@@ -25,12 +25,21 @@
 			.create({
 				messages: [
 					{
+						role: 'system',
+						content: `You are an amazing childrens bedtime story teller.
+							You dream up the most amazing stories for children to fall asleep to.
+							However, the stories must be short and sweet.
+							Each story should contain between 3 and 5 paragraphs and each
+							paragraph should be between 50 and 100 words.`
+					},
+					{
 						role: 'user',
-						content: `Write me a short bed time story. Make it a story between 1 and 2 paragraphs.
-				Make each paragraph a strict maximum between 100 and 200 words.`
+						content: `Write me a short bed time story between 3 and 5 paragraphs long.
+							Each paragraph should be between 50 and 100 words long.`
 					}
 				],
-				model: 'gpt-3.5-turbo'
+				model: 'gpt-3.5-turbo',
+				max_tokens: 3000
 			})
 			.then((response) => {
 				let storyString = response.choices[0].message.content?.split('\n');
@@ -67,6 +76,7 @@
 					console.log(error);
 				});
 		}
+
 		images = tempImages;
 		loading = false;
 		success = data.length ? true : false;
@@ -89,7 +99,7 @@
 
 <div
 	class="snap-y snap-mandatory h-screen w-screen overflow-scroll
-			no-scrollbar"
+			no-scrollbar bg-background-300"
 >
 	<div class="h-[90vh] md:h-screen snap-center w-full relative">
 		<div class="h-full flex justify-center w-full">
