@@ -12,7 +12,6 @@
 		'Setting up flux capacitor...'
 	];
 
-	// Get random statement
 	let currentStatement = statements[Math.floor(Math.random() * statements.length)];
 
 	setInterval(() => {
