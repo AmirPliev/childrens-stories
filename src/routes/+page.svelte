@@ -3,6 +3,7 @@
 	import Paragraph from '$lib/-paragraph.svelte';
 	import { fade } from 'svelte/transition';
 	import Loader from '$lib/-loader.svelte';
+	import OpenAI from 'openai';
 
 	let data: string[] = [];
 	let images: string[] = [];
@@ -12,13 +13,61 @@
 
 		data = [];
 		images = [];
-		const json = await fetch('/story').then(async (res) => await res.json());
 
-		data = json.story as string[];
-		images = json.images as string[];
+		const result = await fetch('/key').then(async (res) => await res.json());
 
-		console.log(json);
+		const openai = new OpenAI({
+			apiKey: result.key ? result.key : '',
+			dangerouslyAllowBrowser: true
+		});
 
+		await openai.chat.completions
+			.create({
+				messages: [
+					{
+						role: 'user',
+						content: `Write me a short bed time story. Make it a story between 1 and 2 paragraphs.
+				Make each paragraph a strict maximum between 100 and 200 words.`
+					}
+				],
+				model: 'gpt-3.5-turbo'
+			})
+			.then((response) => {
+				let storyString = response.choices[0].message.content?.split('\n');
+				data = storyString?.filter((line) => line !== '') as string[];
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+
+		let previousPrompts: string[] = [];
+		let tempImages: string[] = [];
+
+		for (const paragraph of data) {
+			const style =
+				previousPrompts.length > 0
+					? `Style the image to match the previous image's style which had prompt: ${
+							previousPrompts[previousPrompts.length - 1]
+						}`
+					: "Style the image to match the story's style";
+
+			await openai.images
+				.generate({
+					model: 'dall-e-3',
+					prompt: `Create a fitting image for the following
+						 part of a bedtime story: ${paragraph} ${style} Make sure to not create any texts in the images.`,
+					n: 1,
+					size: '1024x1024'
+				})
+				.then((response) => {
+					tempImages.push(response.data[0].url as string);
+					previousPrompts.push(response.data[0].revised_prompt as string);
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		}
+		images = tempImages;
 		loading = false;
 		success = data.length ? true : false;
 
