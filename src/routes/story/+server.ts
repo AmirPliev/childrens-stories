@@ -6,7 +6,7 @@ const openai = new OpenAI({
 	apiKey: env.OPENAI_API_KEY ? env.OPENAI_API_KEY : ''
 });
 
-const debugging = true;
+const debugging = false;
 
 export async function GET() {
 	let story: string[] = [];
@@ -32,37 +32,36 @@ export async function GET() {
 				console.log(error);
 			});
 
-		let previousPrompts: string[] = [];
+		// let previousPrompts: string[] = [];
 
-		for (const paragraph of story) {
-			const style =
-				previousPrompts.length > 0
-					? `Style the image to match the previous image's style which had prompt: ${
-							previousPrompts[previousPrompts.length - 1]
-						}`
-					: "Style the image to match the story's style";
+		// for (const paragraph of story) {
+		// 	const style =
+		// 		previousPrompts.length > 0
+		// 			? `Style the image to match the previous image's style which had prompt: ${
+		// 					previousPrompts[previousPrompts.length - 1]
+		// 				}`
+		// 			: "Style the image to match the story's style";
 
-			await openai.images
-				.generate({
-					model: 'dall-e-3',
-					prompt: `Do not include any texts. Create a fitting image for the following
-						 part of a bedtime story: ${paragraph} ${style}`,
-					n: 1,
-					size: '1024x1024'
-				})
-				.then((response) => {
-					images.push(response.data[0].url as string);
-					previousPrompts.push(response.data[0].revised_prompt as string);
-				})
-				.catch((error) => {
-					console.log(error);
-				});
-		}
+		// 	await openai.images
+		// 		.generate({
+		// 			model: 'dall-e-3',
+		// 			prompt: `Do not include any texts. Create a fitting image for the following
+		// 				 part of a bedtime story: ${paragraph} ${style}`,
+		// 			n: 1,
+		// 			size: '1024x1024'
+		// 		})
+		// 		.then((response) => {
+		// 			images.push(response.data[0].url as string);
+		// 			previousPrompts.push(response.data[0].revised_prompt as string);
+		// 		})
+		// 		.catch((error) => {
+		// 			console.log(error);
+		// 		});
+		// }
 	}
 
 	return json({
 		story: story,
-		images: images,
-		key: env.OPENAI_API_KEY ? 'There is one' : 'None'
+		images: images
 	});
 }

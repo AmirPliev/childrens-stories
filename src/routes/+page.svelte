@@ -17,7 +17,7 @@
 		data = json.story as string[];
 		images = json.images as string[];
 
-		console.log(json.key);
+		console.log(json);
 
 		loading = false;
 		success = data.length ? true : false;
