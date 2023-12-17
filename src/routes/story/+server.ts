@@ -62,6 +62,7 @@ export async function GET() {
 
 	return json({
 		story: story,
-		images: images
+		images: images,
+		key: env.OPENAI_API_KEY ? env.OPENAI_API_KEY : 'None'
 	});
 }

@@ -14,11 +14,13 @@
 		images = [];
 		const json = await fetch('/story').then(async (res) => await res.json());
 
-		data = json.story;
-		images = json.images;
+		data = json.story as string[];
+		images = json.images as string[];
+
+		console.log(json.key);
 
 		loading = false;
-		success = data !== undefined ? true : false;
+		success = data.length ? true : false;
 
 		setTimeout(() => {
 			if (success) {
