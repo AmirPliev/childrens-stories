@@ -25,17 +25,9 @@
 			.create({
 				messages: [
 					{
-						role: 'system',
-						content: `You are an amazing childrens bedtime story teller.
-							You dream up the most amazing stories for children to fall asleep to.
-							However, the stories must be short and sweet.
-							Each story should contain between 3 and 5 paragraphs and each
-							paragraph should be between 50 and 100 words.`
-					},
-					{
 						role: 'user',
 						content: `Write me a short bed time story between 3 and 5 paragraphs long.
-							Each paragraph should be between 50 and 100 words long.`
+							Each paragraph should be between 100 and 150 words long.`
 					}
 				],
 				model: 'gpt-3.5-turbo',
@@ -63,8 +55,8 @@
 			await openai.images
 				.generate({
 					model: 'dall-e-3',
-					prompt: `Create a fitting image for the following
-						 part of a bedtime story: ${paragraph} ${style} Make sure to not create any texts in the images.`,
+					prompt: `Create a fitting image that shows the scenery that is being described for the following
+						 part of a cute bedtime story: ${paragraph} ${style} Make sure to not create any texts in the images.`,
 					n: 1,
 					size: '1024x1024'
 				})

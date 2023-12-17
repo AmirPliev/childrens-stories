@@ -10,7 +10,7 @@
 		[key: string]: string;
 	} = {
 		left: 'md:flex-row-reverse flex-col-reverse',
-		right: 'md:flex-row flex-col'
+		right: 'md:flex-row flex-col-reverse'
 	};
 
 	const gradient: {
