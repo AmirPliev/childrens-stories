@@ -6,7 +6,7 @@ const openai = new OpenAI({
 	apiKey: env.OPENAI_API_KEY ? env.OPENAI_API_KEY : ''
 });
 
-const debugging = false;
+const debugging = true;
 
 export async function GET() {
 	let story: string[] = [];
@@ -63,6 +63,6 @@ export async function GET() {
 	return json({
 		story: story,
 		images: images,
-		key: env.OPENAI_API_KEY ? env.OPENAI_API_KEY : 'None'
+		key: env.OPENAI_API_KEY ? 'There is one' : 'None'
 	});
 }
