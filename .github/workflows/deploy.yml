@@ -15,8 +15,7 @@ jobs:
       - name: Stop
         run: docker-compose down
 
-      - name: Fix env:
-        run : |
+      - run : |
           touch .env
           echo OPENAI_API_KEY=${{ secrets.OPENAI_KEY }} >> .env  
 
