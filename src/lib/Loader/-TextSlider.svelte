@@ -28,7 +28,7 @@
 {#if visible}
 	<p
 		transition:fly={{ y: 0, duration: 2000 }}
-		class="absolute whitespace-nowrap md:text-xl text-white"
+		class="absolute whitespace-nowrap md:text-4xl text-white"
 	>
 		{currentText}
 	</p>
