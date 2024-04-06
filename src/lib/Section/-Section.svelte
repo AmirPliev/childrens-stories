@@ -10,8 +10,6 @@
 	export let imageSide: 'left' | 'right' = 'left';
 	export let goUpButton: boolean = false;
 
-	console.log('current: ', id, 'next: ', getNextTarget(id));
-
 	let innerHeight: number = 0;
 	let orderStyle = imageSide === 'left' ? 'md:flex-row' : 'md:flex-row-reverse';
 </script>
