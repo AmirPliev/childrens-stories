@@ -1,4 +1,6 @@
 FROM node:lts-alpine3.19 as builder
+ARG OPENAI_API_KEY
+ENV OPENAI_API_KEY $OPENAI_API_KEY
 
 WORKDIR /app
 
