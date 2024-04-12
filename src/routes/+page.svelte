@@ -29,7 +29,7 @@
 
 		setTimeout(() => {
 			document.getElementById('screen_0')?.scrollIntoView({ behavior: 'smooth' });
-		}, 1_000);
+		}, 500);
 	}
 </script>
 
@@ -41,12 +41,13 @@
 	style="height: {innerHeight}px;"
 >
 	<HeroSection {getStory} />
+
 	{#if allLoaded}
 		{#each storyParagraphs as paragraph, index}
 			<Section
 				id={`screen_${index}`}
 				text={paragraph}
-				image={storyImages[index]}
+				image={'https://images.unsplash.com/photo-1712759133177-0b60a8abd756?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'}
 				imageSide={index % 2 === 0 ? 'left' : 'right'}
 				goUpButton={index === storyParagraphs.length - 1}
 			/>

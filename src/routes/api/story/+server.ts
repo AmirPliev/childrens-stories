@@ -1,11 +1,14 @@
 import { json } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
+// import { env } from '$env/dynamic/private';
 import OpenAI from 'openai';
+import { OPENAI_API_KEY } from '$env/static/private';
 
 export async function GET() {
 	const openai = new OpenAI({
-		apiKey: env.OPENAI_API_KEY
+		apiKey: OPENAI_API_KEY
 	});
+
+	console.log(OPENAI_API_KEY);
 
 	const story = await openai.chat.completions
 		.create({

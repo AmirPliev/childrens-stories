@@ -1,6 +1,6 @@
 <script context="module">
 	import NavButton from './-NavButton.svelte';
-	import getNextTarget from './nextTarget.ts';
+	import getNextTarget from './nextTarget';
 </script>
 
 <script lang="ts">
@@ -12,13 +12,14 @@
 
 	let innerHeight: number = 0;
 	let orderStyle = imageSide === 'left' ? 'md:flex-row' : 'md:flex-row-reverse';
+	console.log(text, id);
 </script>
 
 <svelte:window bind:innerHeight />
 
 <section
 	{id}
-	class="snap-center relative bg-black p-3 py-3 flex justify-center items-center"
+	class="snap-start relative bg-black p-3 py-3 flex justify-center items-center"
 	style="height: {innerHeight}px;"
 >
 	<div
@@ -31,7 +32,9 @@
 			</div>
 		</div>
 
-		<div class="p-5 pt-3 text-sm md:text-xl w-full md:w-1/2 md:h-full flex md:items-center">
+		<div
+			class="p-5 pt-3 text-sm sm:text-lg md:text-2xl w-full md:w-1/2 md:h-full flex md:items-center"
+		>
 			<p>{text}</p>
 		</div>
 	</div>
