@@ -1,13 +1,13 @@
 import { json } from '@sveltejs/kit';
 import type { RequestEvent } from './$types';
-import { env } from '$env/dynamic/private';
+import { OPENAI_API_KEY } from '$env/static/private';
 import OpenAI from 'openai';
 
 export async function POST({ request }: { request: RequestEvent }) {
 	const stories = await request.json();
 
 	const openai = new OpenAI({
-		apiKey: env.OPENAI_API_KEY
+		apiKey: OPENAI_API_KEY
 	});
 
 	let images: string[] = [];
