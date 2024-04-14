@@ -1,56 +1,76 @@
 <script context="module">
 	import HeroSection from '$lib/-HeroSection.svelte';
 	import Section from '$lib/Section/-Section.svelte';
+	import { Jumper } from 'svelte-loading-spinners';
 </script>
 
 <script lang="ts">
 	let innerHeight = 0;
-	$: storyParagraphs = [] as string[];
-	$: storyImages = [] as string[];
 	let allLoaded: boolean = false;
+	let errorHappened: boolean = false;
+	let initialLoad: boolean = true;
+	$: storyParagraphs = [] as string[];
+	$: firstImage = '';
+
+	setTimeout(() => {
+		initialLoad = false;
+	}, 2_000);
 
 	async function getStory() {
+		errorHappened = false;
 		allLoaded = false;
+
 		await fetch('/api/story')
 			.then((response: any) => response.json())
 			.then((stories: string[]) => {
 				storyParagraphs = stories;
-			});
+			})
+			.catch(() => (errorHappened = true));
 
-		await fetch('/api/images/', {
+		await fetch('/api/image/', {
 			method: 'POST',
-			body: JSON.stringify(storyParagraphs)
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(storyParagraphs[0])
 		})
 			.then((response: any) => response.json())
-			.then((images: string[]) => {
-				storyImages = images;
+			.then((responseImage: string) => {
+				firstImage = responseImage;
 				allLoaded = true;
-			});
+			})
+			.catch(() => (errorHappened = true));
 
 		setTimeout(() => {
 			document.getElementById('screen_0')?.scrollIntoView({ behavior: 'smooth' });
-		}, 500);
+		}, 1_000);
 	}
 </script>
 
 <svelte:window bind:innerHeight />
 
-<main
-	class="font-written tracking-widest text-[#f7ebfe] snap-y snap-mandatory
+{#if initialLoad}
+	<div class="w-screen h-screen flex justify-center items-center">
+		<Jumper size="100" color="#7fc8fa" unit="px" duration="1s" />
+	</div>
+{:else}
+	<main
+		class="font-written tracking-widest text-[#f7ebfe] snap-y snap-mandatory
          w-screen overflow-scroll no-scrollbar"
-	style="height: {innerHeight}px;"
->
-	<HeroSection {getStory} />
+		style="height: {innerHeight}px;"
+	>
+		<HeroSection {getStory} error={errorHappened} />
 
-	{#if allLoaded}
-		{#each storyParagraphs as paragraph, index}
-			<Section
-				id={`screen_${index}`}
-				text={paragraph}
-				image={'https://images.unsplash.com/photo-1712759133177-0b60a8abd756?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'}
-				imageSide={index % 2 === 0 ? 'left' : 'right'}
-				goUpButton={index === storyParagraphs.length - 1}
-			/>
-		{/each}
-	{/if}
-</main>
+		{#if allLoaded}
+			{#each storyParagraphs as paragraph, index}
+				<Section
+					id={index}
+					text={paragraph}
+					image={index === 0 ? firstImage : ''}
+					imageSide={index % 2 === 0 ? 'left' : 'right'}
+					goUpButton={index === storyParagraphs.length - 1}
+				/>
+			{/each}
+		{/if}
+	</main>
+{/if}

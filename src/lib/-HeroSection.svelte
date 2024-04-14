@@ -6,6 +6,7 @@
 
 <script lang="ts">
 	export let getStory: () => Promise<void>;
+	export let error: boolean = false;
 	let innerHeight = 0;
 	let loading: boolean = false;
 
@@ -39,6 +40,14 @@
 	{#if loading}
 		<Loader />
 	{:else}
-		<Button onPress={onButtonPress} />
+		<div class="flex flex-col gap-4">
+			{#if error}
+				<p class="bg-red-400 px-4 red-shadow">
+					An error happened unfortunately. Come back again later.
+				</p>
+			{:else}
+				<Button onPress={onButtonPress} />
+			{/if}
+		</div>
 	{/if}
 </section>
